@@ -14,18 +14,19 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  late Future<List<Cat>> futureRandomCat;
+  late Future<List<Cat>> futureListOfCat;
 
   @override
   void initState() {
     super.initState();
-    futureRandomCat = fetchRandomCat();
+    futureListOfCat = fetchListOfCat();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Fetch Data API',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.deepPurple,
@@ -37,24 +38,29 @@ class _MainAppState extends State<MainApp> {
         ),
         body: Center(
           child: FutureBuilder<List<Cat>>(
-            future: futureRandomCat,
+            future: futureListOfCat,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Card(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Image.network(snapshot.data![0].url),
-                      ListTile(
-                        leading: const Icon(Icons.pets),
-                        title: Text(snapshot.data![0].id),
-                        subtitle: Text(
-                          'Width: ${snapshot.data![0].width} Height: ${snapshot.data![0].height}',
+                return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final cat = snapshot.data![index];
+                      return Card(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Image.network(cat.url),
+                            ListTile(
+                              leading: const Icon(Icons.pets),
+                              title: Text(cat.id),
+                              subtitle: Text(
+                                'Width: ${cat.width} Height: ${cat.height}',
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                );
+                      );
+                    });
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }

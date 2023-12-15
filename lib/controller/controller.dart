@@ -46,3 +46,17 @@ Future<List<Cat>> fetchRandomCat() async {
     throw Exception('Failed to load Cat!');
   }
 }
+
+Future<List<Cat>> fetchListOfCat() async {
+  final response = await http.get(
+    Uri.parse('https://api.thecatapi.com/v1/images/search?limit=10'),
+  );
+
+  if (response.statusCode == 200) {
+    return List<Cat>.from(
+      json.decode(response.body).map((cat) => Cat.fromJson(cat)),
+    );
+  } else {
+    throw Exception('Failed to load Cat!');
+  }
+}

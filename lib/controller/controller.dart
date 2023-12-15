@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:flutter_application_1/data/album.dart';
+import 'package:flutter_application_1/data/cat.dart';
 import 'package:http/http.dart' as http;
 
 Future<Album> fetchAlbum() async {
@@ -28,5 +30,19 @@ Future<List<Album>> fetchAlbumList() async {
         .toList();
   } else {
     throw Exception('Failed to Load List Album');
+  }
+}
+
+Future<List<Cat>> fetchRandomCat() async {
+  final response = await http.get(
+    Uri.parse('https://api.thecatapi.com/v1/images/search'),
+  );
+
+  if (response.statusCode == 200) {
+    return List<Cat>.from(
+      json.decode(response.body).map((cat) => Cat.fromJson(cat)),
+    );
+  } else {
+    throw Exception('Failed to load Cat!');
   }
 }

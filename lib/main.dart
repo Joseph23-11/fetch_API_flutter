@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/controller.dart';
-import 'package:flutter_application_1/data/album.dart';
 import 'package:flutter_application_1/data/cat.dart';
 
 void main() {
@@ -15,13 +14,14 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  late Future<List<Album>> futureAlbumList;
-  // late Future<List<Cat>> futureListOfCat;
+  // late Future<List<Album>> futureAlbumList;
+  late Future<List<Cat>> futureListOfCat;
 
   @override
   void initState() {
     super.initState();
-    futureAlbumList = fetchAlbumList();
+    // futureAlbumList = fetchAlbumList();
+    futureListOfCat = fetchListOfCat();
   }
 
   @override
@@ -38,16 +38,28 @@ class _MainAppState extends State<MainApp> {
           title: const Text('Fetch Data Example'),
         ),
         body: Center(
-          child: FutureBuilder<List<Album>>(
-            future: futureAlbumList,
+          child: FutureBuilder<List<Cat>>(
+            future: futureListOfCat,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: Text(snapshot.data![index].id.toString()),
-                        title: Text(snapshot.data![index].title),
+                      final cat = snapshot.data![index];
+                      return Card(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Image.network(cat.url),
+                            ListTile(
+                              leading: const Icon(Icons.pets),
+                              title: Text(cat.id),
+                              subtitle: Text(
+                                'Width: ${cat.width} Height: ${cat.height}',
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     });
               } else if (snapshot.hasError) {

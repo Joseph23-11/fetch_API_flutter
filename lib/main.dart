@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/controller.dart';
+import 'package:flutter_application_1/data/album.dart';
 import 'package:flutter_application_1/data/cat.dart';
 
 void main() {
@@ -14,19 +15,19 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  late Future<List<Cat>> futureListOfCat;
+  late Future<List<Album>> futureAlbumList;
+  // late Future<List<Cat>> futureListOfCat;
 
   @override
   void initState() {
     super.initState();
-    futureListOfCat = fetchListOfCat();
+    futureAlbumList = fetchAlbumList();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Fetch Data API',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.deepPurple,
@@ -37,28 +38,16 @@ class _MainAppState extends State<MainApp> {
           title: const Text('Fetch Data Example'),
         ),
         body: Center(
-          child: FutureBuilder<List<Cat>>(
-            future: futureListOfCat,
+          child: FutureBuilder<List<Album>>(
+            future: futureAlbumList,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      final cat = snapshot.data![index];
-                      return Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Image.network(cat.url),
-                            ListTile(
-                              leading: const Icon(Icons.pets),
-                              title: Text(cat.id),
-                              subtitle: Text(
-                                'Width: ${cat.width} Height: ${cat.height}',
-                              ),
-                            ),
-                          ],
-                        ),
+                      return ListTile(
+                        leading: Text(snapshot.data![index].id.toString()),
+                        title: Text(snapshot.data![index].title),
                       );
                     });
               } else if (snapshot.hasError) {

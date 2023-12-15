@@ -3,18 +3,29 @@ class Cat {
   final String url;
   final int width;
   final int height;
-  Cat(
-      {required this.id,
-      required this.url,
-      required this.width,
-      required this.height});
+
+  const Cat({
+    required this.id,
+    required this.url,
+    required this.width,
+    required this.height,
+  });
 
   factory Cat.fromJson(Map<String, dynamic> json) {
-    return Cat(
-      id: json["id"],
-      url: json["url"],
-      width: json["width"],
-      height: json["height"],
-    );
+    return switch (json) {
+      {
+        'id': String id,
+        'url': String url,
+        'width': int width,
+        'height': int height,
+      } =>
+        Cat(
+          id: id,
+          url: url,
+          width: width,
+          height: height,
+        ),
+      _ => throw const FormatException('Failed to load cat.'),
+    };
   }
 }

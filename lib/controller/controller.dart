@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_application_1/data/album.dart';
 import 'package:flutter_application_1/data/cat.dart';
+import 'package:flutter_application_1/data/chucknorris.dart';
 import 'package:http/http.dart' as http;
 
 Future<Album> fetchAlbum() async {
@@ -33,17 +34,31 @@ Future<List<Album>> fetchAlbumList() async {
   }
 }
 
+Future<ChuckNorris> fetchChuckNorris() async {
+  final response = await http.get(
+    Uri.parse('https://api.chucknorris.io/jokes/random'),
+  );
+
+  if (response.statusCode == 200) {
+    return ChuckNorris.fromJson(
+        jsonDecode(response.body) as Map<String, dynamic>);
+  } else {
+    throw Exception('Failed to load chuck norris.');
+  }
+}
+
 Future<List<Cat>> fetchRandomCat() async {
   final response = await http.get(
     Uri.parse('https://api.thecatapi.com/v1/images/search'),
   );
 
   if (response.statusCode == 200) {
-    return List<Cat>.from(
-      json.decode(response.body).map((cat) => Cat.fromJson(cat)),
-    );
+    final cats = jsonDecode(response.body);
+    return (cats as List<dynamic>)
+        .map((dynamic cat) => Cat.fromJson(cat as Map<String, dynamic>))
+        .toList();
   } else {
-    throw Exception('Failed to load Cat!');
+    throw Exception('Failed to load cat.');
   }
 }
 
@@ -53,10 +68,11 @@ Future<List<Cat>> fetchListOfCat() async {
   );
 
   if (response.statusCode == 200) {
-    return List<Cat>.from(
-      json.decode(response.body).map((cat) => Cat.fromJson(cat)),
-    );
+    final cats = jsonDecode(response.body);
+    return (cats as List<dynamic>)
+        .map((dynamic cat) => Cat.fromJson(cat as Map<String, dynamic>))
+        .toList();
   } else {
-    throw Exception('Failed to load Cat!');
+    throw Exception('Failed to load cat.');
   }
 }
